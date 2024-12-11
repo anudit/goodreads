@@ -1,3 +1,4 @@
 *.json
 .ropeproject
 .venv
+*.parquet

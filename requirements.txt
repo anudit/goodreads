@@ -6,3 +6,4 @@ lxml
 jsonschema
 tqdm
 orjson
+pyarrow==18.1.0

@@ -1,8 +1,5 @@
-import numpy as np
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import json
 from collections import OrderedDict
 from tqdm import tqdm
 import orjson
@@ -31,13 +28,14 @@ def author_id_to_quotes(id):
 
   page_count = 1
   page = requests.get(f"https://www.goodreads.com/author/quotes/{id}", headers=headers)
+  print("Getting page", page_count, id)
   pageParsed = BeautifulSoup(page.content, 'lxml')
   new_q = extract_data_quote(pageParsed)
 
-  while len(new_q) > 0:
+  while len(new_q) > 0 and page_count<101:
     all_auth_quotes.extend(new_q)
     page_count+=1
-    # print("Getting page", page_count, id)
+    print("Getting page", page_count, id)
     page = requests.get(f"https://www.goodreads.com/author/quotes/{id}?page={page_count}", headers=headers)
     pageParsed = BeautifulSoup(page.content, 'lxml')
     new_q = extract_data_quote(pageParsed)
@@ -47,11 +45,15 @@ def author_id_to_quotes(id):
 
 with open("authorids.json", 'rb') as file:  # Open in binary read mode
     author_ids = orjson.loads(file.read())
-print(len(author_ids))
+print("author_ids:",len(author_ids))
 
-# all_quotes = []
-# for id in tqdm(author_ids):
-#   all_quotes += author_id_to_quotes(id)
+all_quotes = []
+with open("quotes.json", 'rb') as file:  # Load existing quotes.
+    all_quotes = orjson.loads(file.read())
+print("all_quotes:",len(all_quotes))
 
-#   with open('quotes.json', 'wb') as file:
-#     file.write(orjson.dumps(all_quotes, option=orjson.OPT_INDENT_2))
+for id in tqdm(author_ids[353+822+1070+1616+1597:]):
+  all_quotes += author_id_to_quotes(id)
+
+  with open('quotes.json', 'wb') as file:
+    file.write(orjson.dumps(all_quotes, option=orjson.OPT_INDENT_2))
