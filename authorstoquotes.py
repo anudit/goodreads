@@ -52,7 +52,7 @@ with open("quotes.json", 'rb') as file:  # Load existing quotes.
     all_quotes = orjson.loads(file.read())
 print("all_quotes:",len(all_quotes))
 
-for id in tqdm(author_ids[353+822+1070+1616+1597:]):
+for id in tqdm(author_ids[353+822+1070+1616+1597+240+525+3014+59+3503+153:]):
   all_quotes += author_id_to_quotes(id)
 
   with open('quotes.json', 'wb') as file:
